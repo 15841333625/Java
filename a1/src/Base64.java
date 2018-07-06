@@ -9,10 +9,10 @@ public class Base64 {
 			'A','B','C','D','E','F','G','H','I','J',
 			'K','L','M','N','O','P','Q','R','S','T',
 			'U','V','W','X','Y','Z','a','b','c','d',
-			'f','g','h','i','j','k','l','m','n','o',
-			'p','q','r','s','t','u','v','w','x','y',
-			'z','0','1','2','3','4','5','6','7','8',
-			'9','+','/'
+			'e','f','g','h','i','j','k','l','m','n',
+			'o','p','q','r','s','t','u','v','w','x',
+			'y','z','0','1','2','3','4','5','6','7',
+			'8','9','+','/'
 	};
 
 	/**
@@ -48,12 +48,12 @@ public class Base64 {
 		int index = 0;
 		StringBuffer result = new StringBuffer();
 		for (int i = 0; i < groupNum ; i++) {
-			int first = binaryData[index++] & 0xff;
-			int second = binaryData[index++] & 0xff;
-			int third = binaryData[index++] & 0xff;
-			result.append(intToBase64[first >> 2]);
-			result.append(intToBase64[(first << 4) & 0x3f | second >> 4]);
-			result.append(intToBase64[(second << 2) & 0x3f | third >> 6]);
+			byte first = (byte) (binaryData[index++] & 0xff);
+			byte second = (byte) (binaryData[index++] & 0xff);
+			byte third = (byte) (binaryData[index++] & 0xff);
+			result.append(intToBase64[(first >> 2) & 0x3f]);
+			result.append(intToBase64[(first << 4) & 0x30 | ((second >> 4) & 0x0f)]);
+			result.append(intToBase64[(second << 2) & 0x3c | ((third >> 6) & 0x03)]);
 			result.append(intToBase64[third & 0x3f]);
 		}
 		if(lastGroup != 0) {
@@ -121,7 +121,7 @@ public class Base64 {
 	}
 	
 	public static void main(String[] args) {
-		byte[] a = { 1, 2, 3, -7, -9, 110 };
+		byte[] a = { 1, 2, 3, -7, -9, 110, 11 };
 		String s = encode(a);
 		System.out.println(s);
 		byte[] b = decode(s);

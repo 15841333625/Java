@@ -34,10 +34,8 @@ public class EightQueens {
 			for(int i = 0; i < a.length; i ++) {
 				if(check(n, i)) {
 					a[n] = i;
-
 					place(n + 1);
 				}
-
 			}
 			
 			//´úÂë½áÊø
