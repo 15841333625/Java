@@ -1,4 +1,5 @@
 import java.net.*;
+import java.io.*;
 
 /**
  * Created by lenovo on 2018/7/16.
@@ -14,10 +15,14 @@ public class TClient {
         Socket s = new Socket(host, port); // 创建Socket对象
 
         UploadClient uplc = new UploadClient(s);
+        OutputStream ou = s.getOutputStream();// 定义输出流
+        DataOutputStream out = new DataOutputStream(ou);
 
-        uplc.upload();
+
+        uplc.upload(out);
 
 
+        out.close(); // 关闭流对象
         s.close(); // 本次通信结束，关闭Socket对象
     }
 }

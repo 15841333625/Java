@@ -9,6 +9,7 @@ public class NwServer { // NwServer.java，负责接受连接请求，并将创建的Socket对象
     public NwServer(int port, IOStrategy ios) { // 这个方法将在主线程中执行
         try {
             ServerSocket ss = new ServerSocket(port);
+            ss.setSoTimeout(10000000);
             System.out.println("server is ready");
             while (true) {
                 Socket socket = ss.accept(); // 负责接受连接请求，
