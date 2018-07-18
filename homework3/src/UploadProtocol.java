@@ -35,7 +35,7 @@ public class UploadProtocol implements IOStrategy {
 
             dis.close();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -1,0 +1,5 @@
+apple|a round of fruit
+band|a group of musicians
+cat|a small animal
+dark|with no or very little light
+苹果|圆形水果
