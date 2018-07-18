@@ -12,25 +12,29 @@ public class UploadProtocol implements IOStrategy {
 
         try {
 
-            InputStream dis = socket.getInputStream() ;
+            InputStream is = socket.getInputStream() ; // dis什么时候关闭？
+            DataInputStream dis = new DataInputStream(is);
             int command = 0;
 
-            while (true) {
+            while (!socket.isClosed()) {
                 // 接受协议命令，1表示客户端上传的为文件，2表示客户端上传的为文件夹
                 command = dis.read();
 
-                switch (command) {
+                switch (command){
                     case 1:
                         upls.receiveFile(dis);
                         break;
                     case 2:
-                        upls.receiveDiretory(dis);
+                        // 获取文件夹下文件的个数
+                        int length = dis.read();
+                        upls.receiveDir(dis, length);
                         break;
                 }
 
-                dis.close();
-
             }
+
+            dis.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
