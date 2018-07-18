@@ -41,7 +41,7 @@ public class UploadClient {
                     else
                         System.out.println("无效输入！");
 
-                } catch ( IOException e) {
+                } catch ( Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -50,7 +50,7 @@ public class UploadClient {
 
     // 上传文件
     // path 为上传文件的绝对路径, out 为输出流, flag 为服务标志位, repath 表示文件相对上传文件夹的路径
-    public void uploadFile(String path, DataOutputStream out, int flag, String repath) throws IOException {
+    public void uploadFile(String path, DataOutputStream out, int flag, String repath) throws Exception {
         FileInputStream fis = null;
         String fileName="";
         File file = new File(path);
@@ -65,20 +65,31 @@ public class UploadClient {
         } else if(flag == 2) {
             //1.写入文件夹路径;
             System.out.println("您要上传的文件为："+path);
+            fileName = path;
             out.writeUTF(repath);
         }
 
-        //2.写入文件长度
-        out.writeLong(file.length());
+        //2.文件加密，将加密后文件暂存在 xxxdes.xxx 文件中
+        String[] newName = fileName.split("\\.");
+        String desFileName = newName[0] + "des." + newName[1];
+        File desFile = new File(desFileName);
+
+        DES.encrypt(file.getAbsolutePath(), desFile.getAbsolutePath());
+
+        //3.写入文件长度
+        out.writeLong(desFile.length());
 
         //3.写入文件内容
-        fis=new FileInputStream(file);
-        byte[] b = new byte[(int)file.length()];
+        fis=new FileInputStream(desFile);
+        byte[] b = new byte[(int)desFile.length()];
         fis.read(b);
         out.write(b);
         out.flush();
 
         fis.close();
+
+        //4.删除加密后文件
+        desFile.delete();
     }
 
     // 遍历文件夹
@@ -93,7 +104,7 @@ public class UploadClient {
         }
     }
 
-    public void uploadDirectory(String path, DataOutputStream out) throws IOException {
+    public void uploadDirectory(String path, DataOutputStream out) throws Exception {
         File root = new File(path);
         String rootPath = root.getAbsolutePath();
 
