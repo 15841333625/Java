@@ -4,6 +4,15 @@ import java.io.*;
  * Created by lenovo on 2018/7/17.
  */
 public class UploadServer {
+    // 接收文件的文件夹
+    private File down;
+
+    public UploadServer(String downPath) {
+        down = new File(downPath);
+        if(!down.exists()) {
+            down.mkdirs();
+        }
+    }
     // 接收文件
     public void receiveFile(DataInputStream dis) throws Exception {
         // 局部变量
@@ -15,8 +24,8 @@ public class UploadServer {
         name = dis.readUTF().trim();
 
         // 如果只有文件名，则直接存到指定文件夹下
-        System.out.println("要下载的文件为："+name);
-        out = new FileOutputStream("down\\" + name);
+        System.out.println("要接收的文件为："+name);
+        out = new FileOutputStream(down + "\\" + name);
 
         // 第二步：将输入流中的其他内容写入到文件
         long length = dis.readLong();
@@ -27,9 +36,9 @@ public class UploadServer {
         out.close();
 
         // 文件解密
-        decode(new File("down\\" + name));
+        decode(new File(down + "\\" + name));
 
-        System.out.println("下载结束");
+        System.out.println("接收结束");
     }
 
     public void receiveDir(DataInputStream dis,int size) throws Exception{
@@ -42,10 +51,10 @@ public class UploadServer {
         for(int j = 0; j < size; j ++) {
             // 第一步：获取文件名，或文件路径
             name = dis.readUTF().trim();
-            System.out.println("要下载的文件为："+name);
+            System.out.println("要接收的文件为："+name);
 
             // 得到文件从上传文件夹开始的路径
-            String relativePath = "down\\" + name;
+            String relativePath = down + "\\" + name;
             dir = new File(relativePath);
             File pardir = dir.getParentFile();
             boolean flag = false;
@@ -70,9 +79,7 @@ public class UploadServer {
             // 第三步：文件解密
             decode(dir);
         }
-
-
-        System.out.println("下载结束");
+        System.out.println("接收结束");
     }
 
     // 解密文件

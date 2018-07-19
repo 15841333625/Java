@@ -2,13 +2,20 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  * Created by lenovo on 2018/7/17.
  */
 public class UploadProtocol implements IOStrategy {
     public void service(Socket socket) {
-        UploadServer upls = new UploadServer();
+        // 输入存储接收文件的文件夹路径
+        System.out.println("输入接收路径");
+        String downPath = "";
+        Scanner sc = new Scanner(System.in);
+        downPath = sc.next();
+
+        UploadServer upls = new UploadServer(downPath);
 
         try {
 
